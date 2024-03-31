@@ -9,6 +9,28 @@ client = OpenAI(
 # Initialize OpenAI
 # openai.api_key = os.getenv('OPENAI_API_KEY')
 
+# For Assistant
+
+
+assistant = client.beta.assistants.create(
+  instructions="You are a personal math tutor. When asked a math question, write and run code to answer the question.",
+  model="gpt-4-turbo-preview",
+  tools=[{"type": "code_interpreter"}]
+)
+
+# Upload a file with an "assistants" purpose
+file = client.files.create(
+  file=open("speech.py", "rb"),
+  purpose='assistants'
+)
+
+# Create an assistant using the file ID
+assistant = client.beta.assistants.create(
+  instructions="You are a personal math tutor. When asked a math question, write and run code to answer the question.",
+  model="gpt-4-turbo-preview",
+  tools=[{"type": "code_interpreter"}],
+  file_ids=[file.id]
+)
 
 st.title("IP3 Physics Dynamics Bot")
 st.text("I'm here to help!")
@@ -17,7 +39,7 @@ st.text("I'm here to help!")
 	
 # Set a default model
 if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo"
+    st.session_state["openai_model"] = "gpt-4-turbo-preview"
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -39,7 +61,7 @@ if prompt := st.chat_input("What questions do you still have of Dynamics?"):
 	    
     with st.chat_message("assistant"):
         stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo-preview",
             messages=[
                 {"role": m["role"], "content": m["content"]}
                 for m in st.session_state.messages
