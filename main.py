@@ -1,4 +1,5 @@
 import os
+import re
 import streamlit as st
 from openai import OpenAI
 
@@ -22,7 +23,13 @@ if "messages" not in st.session_state:
 for message in st.session_state.messages:
     if message["role"] != "system":
         with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+            # Split the message into text and LaTeX parts
+            parts = re.split(r'(\$[^\$]*\$)', message["content"])
+            for part in parts:
+                if part.startswith('$') and part.endswith('$'):
+                    st.latex(part.strip('$'))
+                else:
+                    st.markdown(part)
 
 # Accept user input
 if prompt := st.chat_input("What questions do you still have about Dynamics?"):
@@ -45,11 +52,11 @@ if prompt := st.chat_input("What questions do you still have about Dynamics?"):
         response = ""
         for chunk in stream:
             response += chunk["choices"][0]["delta"]["content"]
-            st.markdown(chunk["choices"][0]["delta"]["content"])
+            parts = re.split(r'(\$[^\$]*\$)', chunk["choices"][0]["delta"]["content"])
+            for part in parts:
+                if part.startswith('$') and part.endswith('$'):
+                    st.latex(part.strip('$'))
+                else:
+                    st.markdown(part)
     
     st.session_state.messages.append({"role": "assistant", "content": response})
-    
-    # Render LaTeX in response
-    for message in st.session_state.messages:
-        if message["role"] == "assistant":
-            st.markdown(f"$$ {message['content']} $$")
