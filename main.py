@@ -16,7 +16,7 @@ st.text("I'm here to help!")
 	
 # Set a default model
 if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-4-turbo-preview"
+    st.session_state["openai_model"] = "gpt-4o-mini"
 
 # Initialize chat history
 if "messages" not in st.session_state:
