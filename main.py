@@ -41,22 +41,21 @@ if prompt := st.chat_input("What questions do you still have about Dynamics?"):
         
     # Generate response from OpenAI API
     with st.chat_message("assistant"):
-        stream = client.chat_completions.create(
+        response = client.ChatCompletion.create(
             model=st.session_state["openai_model"],
             messages=[
                 {"role": m["role"], "content": m["content"]}
                 for m in st.session_state.messages
-            ],
-            stream=True,
+            ]
         )
-        response = ""
-        for chunk in stream:
-            response += chunk["choices"][0]["delta"]["content"]
-            parts = re.split(r'(\$[^\$]*\$)', chunk["choices"][0]["delta"]["content"])
-            for part in parts:
-                if part.startswith('$') and part.endswith('$'):
-                    st.latex(part.strip('$'))
-                else:
-                    st.markdown(part)
-    
-    st.session_state.messages.append({"role": "assistant", "content": response})
+        
+        response_text = response['choices'][0]['message']['content']
+        st.session_state.messages.append({"role": "assistant", "content": response_text})
+
+        # Split the response into text and LaTeX parts
+        parts = re.split(r'(\$[^\$]*\$)', response_text)
+        for part in parts:
+            if part.startswith('$') and part.endswith('$'):
+                st.latex(part.strip('$'))
+            else:
+                st.markdown(part)
