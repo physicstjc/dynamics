@@ -32,7 +32,7 @@ if prompt := st.chat_input("What questions do you still have of Dynamics?"):
     
     with st.chat_message("assistant"):
         stream = client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-4o-mini",
             messages=[
                 {"role": m["role"], "content": m["content"]}
                 for m in st.session_state.messages
