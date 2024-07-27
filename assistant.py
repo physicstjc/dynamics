@@ -10,6 +10,9 @@ import re
 # It also does not render equations in latex.
 assistant_id    = st.secrets["assistant_id"]
 st.image('https://www.physicslens.com/wp-content/uploads/2024/07/newtonslaws.png', caption="All about Newton's Laws of Motion!", width=480)
+st.image('https://tjcphysics.s3.ap-southeast-1.amazonaws.com/wooden-and-metal-balls.png', caption="Balls in Uniform Motion", width=480)
+st.markdown("Two balls of different masses but equal volume rest at the back of a truck with a smooth floor. The truck, initially moving at a constant speed, abruptly comes to a stop. Describe will both balls will react.")
+
 # Set openAi client , assistant ai and assistant ai thread
 @st.cache_resource
 def load_openai_client_and_assistant():
